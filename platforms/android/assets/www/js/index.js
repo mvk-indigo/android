@@ -1,20 +1,25 @@
 var app = {
-    initialize: function() {
-        this.bind();
-    },
-    bind: function() {
-        document.addEventListener('deviceready', this.deviceready, false);
-    },
-    deviceready: function() {
-        // note that this is an event handler so the scope is that of the event
-        // so we need to call app.report(), and not this.report()
-        app.report('deviceready');
-    },
-    report: function(id) { 
-        console.log("report:" + id);
-        // hide the .pending <p> and show the .complete <p>
-        document.querySelector('#' + id + ' .pending').className += ' hide';
-        var completeElem = document.querySelector('#' + id + ' .complete');
-        completeElem.className = completeElem.className.split('hide').join('');
-    }
+  initialize: function() {
+    this.bind();
+  },
+  bind: function() {
+    $(document).on("deviceready", this.deviceready);
+  },
+  deviceready: function() {
+    $(".app .scan").on("touchstart click", function() {
+      window.plugins.barcodeScanner.scan(function(result) {
+        $(".app .scan").hide();
+        $(".app .results")
+          .show()
+          .find(".text")
+          .text(result.text)
+          .end()
+          .find(".format")
+          .text(result.format);
+
+      }, function(error) {
+          alert("Scanning failed: " + error);
+      });
+    });
+  }
 };
