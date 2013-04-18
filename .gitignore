@@ -1,2 +1,6 @@
 .DS_Store
 platforms/android/bin/
+
+platforms/android/bin/IndigoAndroid.apk
+
+platforms/android/bin/resources.ap_
