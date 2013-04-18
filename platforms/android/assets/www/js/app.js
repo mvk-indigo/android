@@ -8,7 +8,8 @@
     bind: function() {
       return $(document).on("deviceready", this.deviceready);
     },
-    deviceready: function() {
+    deviceready: function() {},
+    scan: function() {
       return window.plugins.barcodeScanner.scan((function(result) {
         $(".app .scan").hide();
         return $(".app .results").show().find(".text").text(result.text).end().find(".format").text(result.format);

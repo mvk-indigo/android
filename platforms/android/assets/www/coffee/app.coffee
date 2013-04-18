@@ -6,16 +6,18 @@ window.app =
     $(document).on "deviceready", @deviceready
 
   deviceready: ->
-      window.plugins.barcodeScanner.scan ((result) ->
-        $(".app .scan").hide()
-        $(".app .results")
-          .show()
-          .find(".text")
-          .text(result.text)
-          .end()
-          .find(".format")
-          .text result.format
 
-      ), (error) ->
-        alert "Scanning failed: " + error
+  scan: ->
+    window.plugins.barcodeScanner.scan ((result) ->
+      $(".app .scan").hide()
+      $(".app .results")
+        .show()
+        .find(".text")
+        .text(result.text)
+        .end()
+        .find(".format")
+        .text result.format
+
+    ), (error) ->
+      alert "Scanning failed: " + error
 
