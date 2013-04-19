@@ -8,23 +8,43 @@
         <title>Scan Barcode</title>
     </head>
     <body>
-        <section class="home">
-            <div class="scan">
-                <div class="icon"></div>
-                <p>Skanna</p>
-            </div>
-            <div class="search">
-                <div class="icon"></div>
-                <p>Sök</p>
-            </div>
-        </section>
+        <div class="app">
+            <section id="home" data-index=1>
+                <div class="scan">
+                    <div class="icon"></div>
+                    <p>Skanna</p>
+                </div>
+                <div class="search">
+                    <div class="icon"></div>
+                    <p>Sök</p>
+                </div>
+            </section><!--
+
+            --><section id="product" data-index=2>
+            </section>
+            <script id="product-template" type="text/template">
+                <div class="info">
+                    <h1 class="name"><%= name %></h1>
+                    <p>
+                        <a href="<%= url %>" class="url"><img src="<%= image %>"></a>
+                        <p class="description"><%= description %></p>
+                    </p>
+                </div>
+                <div class="contents">
+                </div>
+            </script>
+        </div>
 
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/barcodescanner.js"></script>
         <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery.transit.min.js"></script>
+        <script type="text/javascript" src="js/underscore.min.js"></script>
+        <script type="text/javascript" src="js/fastclick.min.js"></script>
         <script type="text/javascript" src="js/app.js"></script>
         <script type="text/javascript">
             app.initialize();
+            // $("body").on("click", testProduct)
         </script>
     </body>
 </html>

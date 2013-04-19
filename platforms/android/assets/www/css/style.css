@@ -3,54 +3,61 @@
 }
 html,
 body {
-  width: 100%;
+  width: 320px;
   height: 100%;
   margin: 0;
   padding: 0;
   font-family: Helvetica, Arial, sans-serif;
   color: #f5f5f5;
+  overflow: hidden;
 }
-body {
-  display: none;
-}
-section {
-  width: 100%;
+.app {
+  width: 640px;
   height: 100%;
+  background: #d6d8e5;
 }
-.home {
+.app section {
+  margin: 0;
+  padding: 0;
+  width: 320px;
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+}
+#home {
   text-align: center;
   font-size: 30px;
   font-weight: bold;
   color: white;
 }
-.home .scan {
+#home .scan {
   height: 50%;
   padding-top: 60px;
   background: #c87f70;
 }
-.home .scan .icon {
+#home .scan .icon {
   width: 100px;
   background-image: url(../img/scan.svg);
 }
-.home .scan.touch {
+#home .scan.touch {
   background: #984a3a;
 }
-.home .search {
+#home .search {
   height: 50%;
   padding-top: 60px;
   background: #d6d8e5;
   color: #444;
 }
-.home .search .icon {
+#home .search .icon {
   background-image: url(../img/search.svg);
 }
-.home .search p {
+#home .search p {
   margin-top: 30px;
 }
-.home .search.touch {
+#home .search.touch {
   background: #989dbd;
 }
-.home .icon {
+#home .icon {
   width: 70px;
   height: 70px;
   margin: 0 auto;
@@ -58,6 +65,27 @@ section {
   background-repeat: no-repeat;
   background-position: center center;
 }
-.home p {
+#home p {
   margin: 20px;
+}
+#product .info {
+  padding: 20px 20px;
+  width: 100%;
+  background: #c87f70;
+}
+#product .info h1 {
+  font-size: 18px;
+  margin-top: 0;
+}
+#product .info img {
+  width: 60px;
+  height: 60px;
+  float: left;
+  margin-right: 15px;
+  border: 5px solid #c47565;
+}
+#product .info .description {
+  font-size: 13px;
+  vertical-align: top;
+  line-height: 1.5em;
 }
