@@ -1,18 +1,28 @@
+ENDPOINT = "http://fierce-harbor-8745.herokuapp.com/product"
 SCREEN_WIDTH = 320
-MOCK_PRODUCT =
-  name: "Elegant Aqua Lackfärg Matt 10"
-  description: "Lackfärg av högsta kvalitet för alla slags möbler
- och snickerier inomhus. Färgen är lätt att måla med och ger vacker yta."
-  image: "http://www.bauhaus.se/media/catalog/product/cache/1/image/
-265x/9df78eab33525d08d6e5fb8d27136e95/5/3/5366810S.jpg"
-  url: "http://www.bauhaus.se/elegant-aqua-lackfarg-matt-10.html"
+MAX_INDEX = 80
+MIN_INDEX = 5
+
+MOCK_PRODUCT = {
+  "R": "37, 38, 41",
+  "_id": "",
+  "index": "64.5",
+  "product_name": "Kakelfog",
+  "desc": "Cementbaserat fogbruk f\u00f6r fogning av keramiska plattor p\u00e5 v\u00e4gg och golv i v\u00e5ta och torra utrymmen. \u00c4ven f\u00f6r utomhusbruk.",
+  "content": [{
+    "ingredient_name": "Cement",
+    "percentage": "30-50"
+  }, {
+    "ingredient_name": "Kalciumkarbonat",
+    "percentage": "30-60"
+  }],
+  "manufacturer": "Kiilto",
+  "image_link": "https://dl.dropboxusercontent.com/u/24952358/MVK-bilder/Ny%20mapp/kakelfog.jpg",
+  "ean-code": "6411513523100"
+}
 
 $cached = {}
 screenIndex = 1
-
-window.testProduct = ->
-  cacheSelectors()
-  displayProduct MOCK_PRODUCT
 
 cacheSelectors = ->
   $cached =
@@ -31,7 +41,7 @@ cacheSelectors = ->
       product: $ "#product-template"
 
 deviceready = ->
-  cacheSelectors()
+  serverWakeUp()
 
   $cached.home.scan.on "click", ->
     $cached.home.scan.addClass "touch"
@@ -52,10 +62,9 @@ scan = ->
   window.plugins.barcodeScanner.scan (({cancelled, text, format}) ->
     $cached.home.scan.removeClass "touch"
     return if cancelled
-
-    fetchProduct
+    fetchResult
       code: text
-      success: displayProduct
+      success: ((result) -> displayProduct result[0])
       error: displayError
 
   ), (error) ->
@@ -66,22 +75,39 @@ search = ->
   $cached.home.search.removeClass "touch"
   return unless searchWord
 
-  fetchProduct
+  fetchResult
     name: searchWord
-    success: displayProduct
+    success: ((result) -> displayProduct result[0])
     error: displayError
 
-fetchProduct = ({name, code, error, success}) ->
-  _success = true
-  _.defer ->
-    if _success
-    then success? MOCK_PRODUCT
-    else error? "Produkten hittades inte"
+fetchResult = ({name, code, error, success}) ->
+  params = { name: name, ean_code: code }
+  errorCallback = -> error? "Produkten hittades inte"
+  $.getJSON(ENDPOINT, params)
+    .success((data) ->
+      return errorCallback() unless data.result.length
+      success? data.result
+    )
+    .error(errorCallback)
 
 displayProduct = (product) ->
+  return unless product
+
   gotoScreen id: "product"
   template = _.template $cached.templates.product.html()
-  $cached.product.$.html template(product)
+
+  environmentPercent = calculateEnvironmentPercent product.index
+
+  $cached.product.$.html template(
+    product: product
+    environmentPercent: environmentPercent
+    risks: listRisks product.R
+  )
+
+  _.delay(->
+    $(".rating-container .fill").css("width", environmentPercent + "%")
+  , 1000)
+
 
 displayError = (error) ->
   alert error
@@ -98,5 +124,19 @@ gotoScreen = ({index, id}) ->
     x: -(index - 1) * SCREEN_WIDTH
   , 500)
 
+# Send a request to wake up the server
+serverWakeUp = ->
+  $.get ENDPOINT
+
+calculateEnvironmentPercent = (index) ->
+  100 - ((index - MIN_INDEX) / (MAX_INDEX - MIN_INDEX)) * 100
+
+listRisks = (rString) ->
+  return [] unless rString
+  _(rString.split(", ")).map((item) -> RISK_PHRASES[item])
+
 window.app =
-  initialize: -> $(document).on "deviceready", deviceready
+  initialize: ->
+    cacheSelectors()
+    $(document).on "deviceready", deviceready
+    # displayProduct MOCK_PRODUCT

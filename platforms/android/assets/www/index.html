@@ -24,14 +24,38 @@
             </section>
             <script id="product-template" type="text/template">
                 <div class="info">
-                    <h1 class="name"><%= name %></h1>
+                    <h1 class="name"><%= product.manufacturer %> <%= product.product_name %></h1>
                     <p>
-                        <a href="<%= url %>" class="url"><img src="<%= image %>"></a>
-                        <p class="description"><%= description %></p>
+                        <a href="<%= product.url %>" class="url"><img src="<%= product.image_link %>"></a>
+                        <p class="description"><%= product.desc %></p>
                     </p>
+                    <div class="rating-container">
+                        <span>Miljövänlighet: <%= Math.round(environmentPercent) %>%</span>
+                        <div class="bar">
+                            <div class="fill"></div>
+                        </div>
+                    </div>
                 </div>
+                <% if (product.content.length) { %>
                 <div class="contents">
+                    <ul>
+                        <% for(var i = 0; i < product.content.length; i++) { %>
+                            <li>
+                                <span class="name"><%= product.content[i].ingredient_name %></span><span class="percent"><%= product.content[i].percentage %>%</span>
+                            </li>
+                        <% } %>
+                    </ul>
                 </div>
+                <% } %>
+                <% if (risks.length) { %>
+                <div class="risks">
+                    <ul>
+                        <% for(var i = 0; i < risks.length; i++) { %>
+                            <li><%= risks[i] %></li>
+                        <% } %>
+                    </ul>
+                </div>
+                <% } %>
             </script>
         </div>
 
@@ -41,6 +65,7 @@
         <script type="text/javascript" src="js/jquery.transit.min.js"></script>
         <script type="text/javascript" src="js/underscore.min.js"></script>
         <script type="text/javascript" src="js/fastclick.min.js"></script>
+        <script type="text/javascript" src="js/riskphrases.js"></script>
         <script type="text/javascript" src="js/app.js"></script>
         <script type="text/javascript">
             app.initialize();
