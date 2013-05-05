@@ -1,20 +1,23 @@
 * {
   box-sizing: border-box;
+  -webkit-backface-visibility: hidden;
 }
 html,
 body {
   width: 320px;
-  height: 100%;
+  height: 508px;
   margin: 0;
   padding: 0;
   font-family: Helvetica, Arial, sans-serif;
   color: #f5f5f5;
   overflow: hidden;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-user-select: none;
 }
 .app {
-  position: absolute;
-  width: 640px;
+  position: relative;
   height: 100%;
+  width: 960px;
   background: #d6d8e5;
 }
 .app section {
@@ -68,6 +71,48 @@ body {
 }
 #home p {
   margin: 20px;
+}
+#search-results {
+  display: none;
+  height: 100%;
+  overflow: scroll;
+}
+#search-results h1 {
+  width: 100%;
+  background-color: #c87f70;
+  text-align: center;
+  margin: 0;
+  padding: 10px;
+}
+#search-results ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+#search-results li {
+  background-color: #f5f5f5;
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 2px;
+  height: 70px;
+  font-size: 16px;
+}
+#search-results li img {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f0f0f0;
+  margin-right: 10px;
+}
+#search-results li .name {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 5px;
+  width: 200px;
+  font-weight: bold;
+  color: #c87f70;
+}
+#search-results li.touch {
+  background: #dcdcdc;
 }
 #product {
   overflow: scroll;

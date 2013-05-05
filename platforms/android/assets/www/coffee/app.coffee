@@ -1,13 +1,13 @@
 ENDPOINT = "http://fierce-harbor-8745.herokuapp.com/product"
 SCREEN_WIDTH = 320
-MAX_INDEX = 80
-MIN_INDEX = 5
+MAX_INDEX = 11
+MIN_INDEX = 0
 
 MOCK_PRODUCT = {
   "R": "37, 38, 41",
   "_id": "",
   "index": "64.5",
-  "product_name": "Kakelfog",
+  "product_name": "Kakelfog Lorem Ipsum Dolor",
   "desc": "Cementbaserat fogbruk f\u00f6r fogning av keramiska plattor p\u00e5 v\u00e4gg och golv i v\u00e5ta och torra utrymmen. \u00c4ven f\u00f6r utomhusbruk.",
   "content": [{
     "ingredient_name": "Cement",
@@ -37,8 +37,12 @@ cacheSelectors = ->
     product:
       $: $ "#product"
 
+    searchResults:
+      $: $ "#search-results"
+
     templates:
       product: $ "#product-template"
+      searchResults: $ "#search-results-template"
 
 deviceready = ->
   serverWakeUp()
@@ -56,7 +60,8 @@ deviceready = ->
     if screenIndex is 1
       navigator.app.exitApp()
     else
-      gotoScreen(index: screenIndex - 1)
+      index = screenIndex - 1
+      gotoScreen(index: index, backward: true)
 
 scan = ->
   window.plugins.barcodeScanner.scan (({cancelled, text, format}) ->
@@ -77,7 +82,10 @@ search = ->
 
   fetchResult
     name: searchWord
-    success: ((result) -> displayProduct result[0])
+    success: ((result) ->
+      return displayProduct result[0] if result.length is 1
+      displaySearchResults result
+    )
     error: displayError
 
 fetchResult = ({name, code, error, success}) ->
@@ -90,13 +98,30 @@ fetchResult = ({name, code, error, success}) ->
     )
     .error(errorCallback)
 
+displaySearchResults = (products) ->
+  return unless products.length
+
+  gotoScreen id: "search-results"
+  template = _.template $cached.templates.searchResults.html()
+
+  $cached.searchResults.$.html template(
+    products: products
+  )
+
+  $cached.searchResults.$.off "click "
+  $cached.searchResults.$.on "click", "li", (e) ->
+    $this = $ this
+    $this.addClass "touch"
+    _.delay (-> $this.removeClass "touch"), 500
+    displayProduct products[$this.data "index"]
+
 displayProduct = (product) ->
   return unless product
 
   gotoScreen id: "product"
   template = _.template $cached.templates.product.html()
 
-  environmentPercent = calculateEnvironmentPercent product.index
+  environmentPercent = calculateEnvironmentPercent product
 
   $cached.product.$.html template(
     product: product
@@ -112,31 +137,39 @@ displayProduct = (product) ->
 displayError = (error) ->
   alert error
 
-gotoScreen = ({index, id}) ->
+gotoScreen = ({id, index, backward}) ->
   if id
     $screen = $("##{id}")
-    index = $screen.data("index")
   else if index
     $screen = $("section[data-index=#{index}]")
+  else
+    return
 
-  screenIndex = index
+  $screen.css("display", "inline-block");
+  screenIndex += if backward then -1 else 1
+
   $cached.app.transition(
-    x: -(index - 1) * SCREEN_WIDTH
-  , 500)
+    x: -(screenIndex - 1) * SCREEN_WIDTH
+  , 500, ->
+    $cached.searchResults.$.hide() if screenIndex is 1
+  )
+
 
 # Send a request to wake up the server
 serverWakeUp = ->
   $.get ENDPOINT
 
-calculateEnvironmentPercent = (index) ->
-  100 - ((index - MIN_INDEX) / (MAX_INDEX - MIN_INDEX)) * 100
+calculateEnvironmentPercent = (product) ->
+  100 - ((listRisks(product.R).length - MIN_INDEX) / (MAX_INDEX - MIN_INDEX)) * 100
 
 listRisks = (rString) ->
   return [] unless rString
-  _(rString.split(", ")).map((item) -> RISK_PHRASES[item])
+  _(rString.split(" ")).map((item) -> RISK_PHRASES[item.replace(",", "")])
 
 window.app =
   initialize: ->
-    cacheSelectors()
     $(document).on "deviceready", deviceready
-    # displayProduct MOCK_PRODUCT
+    cacheSelectors()
+    FastClick.attach(document.body)
+    # displaySearchResults [MOCK_PRODUCT, MOCK_PRODUCT]
+    # _.delay (-> displayProduct MOCK_PRODUCT), 1000

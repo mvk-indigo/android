@@ -20,8 +20,25 @@
                 </div>
             </section><!--
 
-            --><section id="product" data-index=2>
+            --><section id="search-results" data-index=2>
+                THEM RESULTS
+            </section><!--
+
+            --><section id="product" data-index=3>
             </section>
+
+            <script id="search-results-template" type="text/template">
+                <h1>Välj produkt</h1>
+                <ul>
+                    <% for(var i = 0; i < products.length; i++) { %>
+                        <li data-index=<%= i %>>
+                            <img src="<%= products[i].image_link %>">
+                            <span class="name"><%= products[i].manufacturer %> <%= products[i].product_name %></span>
+                        </li>
+                    <% } %>
+                </ul>
+            </script>
+
             <script id="product-template" type="text/template">
                 <div class="info">
                     <h1 class="name"><%= product.manufacturer %> <%= product.product_name %></h1>
@@ -41,7 +58,11 @@
                     <ul>
                         <% for(var i = 0; i < product.content.length; i++) { %>
                             <li>
-                                <span class="name"><%= product.content[i].ingredient_name %></span><span class="percent"><%= product.content[i].percentage %>%</span>
+                                <span class="name"><%= product.content[i].ingredient_name %></span><span class="percent">
+                                    <% if(product.content[i].percentage) { %>
+                                    <%= product.content[i].percentage + "%" %>
+                                    <% } %>
+                                    </span>
                             </li>
                         <% } %>
                     </ul>
@@ -69,7 +90,6 @@
         <script type="text/javascript" src="js/app.js"></script>
         <script type="text/javascript">
             app.initialize();
-            // $("body").on("click", testProduct)
         </script>
     </body>
 </html>
