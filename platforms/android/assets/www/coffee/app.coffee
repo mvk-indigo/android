@@ -1,5 +1,5 @@
 ENDPOINT = "http://fierce-harbor-8745.herokuapp.com/product"
-SCREEN_WIDTH = 320
+SCREEN_WIDTH = 360
 MAX_INDEX = 11
 MIN_INDEX = 0
 
@@ -171,5 +171,6 @@ window.app =
     $(document).on "deviceready", deviceready
     cacheSelectors()
     FastClick.attach(document.body)
+    # alert "WIDTH: #{document.width}, HEIGHT: #{document.height}"
     # displaySearchResults [MOCK_PRODUCT, MOCK_PRODUCT]
-    # _.delay (-> displayProduct MOCK_PRODUCT), 1000
+    # displayProduct MOCK_PRODUCT

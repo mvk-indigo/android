@@ -4,8 +4,8 @@
 }
 html,
 body {
-  width: 320px;
-  height: 508px;
+  width: 360px;
+  height: 567px;
   margin: 0;
   padding: 0;
   font-family: Helvetica, Arial, sans-serif;
@@ -17,13 +17,13 @@ body {
 .app {
   position: relative;
   height: 100%;
-  width: 960px;
+  width: 1080px;
   background: #d6d8e5;
 }
 .app section {
   margin: 0;
   padding: 0;
-  width: 320px;
+  width: 360px;
   height: 100%;
   display: inline-block;
   vertical-align: top;

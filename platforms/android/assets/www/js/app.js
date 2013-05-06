@@ -4,7 +4,7 @@
 
   ENDPOINT = "http://fierce-harbor-8745.herokuapp.com/product";
 
-  SCREEN_WIDTH = 320;
+  SCREEN_WIDTH = 360;
 
   MAX_INDEX = 11;
 
