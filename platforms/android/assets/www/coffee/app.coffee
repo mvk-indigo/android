@@ -94,8 +94,9 @@ fetchResult = ({name, code, error, success}) ->
   errorCallback = -> error? "Produkten hittades inte"
   $.getJSON(ENDPOINT, params)
     .success((data) ->
-      return errorCallback() unless data.result.length
-      success? data.result
+      filtered = filterProducts data.result
+      return errorCallback() unless filtered.length
+      success? filtered
     )
     .error(errorCallback)
 
@@ -131,13 +132,9 @@ displayProduct = (product) ->
     healthPercent: healthPercent
     risks: listRisks(
       product.R,
-      _.defaults window.RISK_PHRASES.ENVIRONMENT, window.RISK_PHRASES.HEALTH
+      _.defaults {}, window.RISK_PHRASES.ENVIRONMENT, window.RISK_PHRASES.HEALTH
     )
   )
-  console.log listRisks(
-      product.R,
-      _.defaults window.RISK_PHRASES.ENVIRONMENT, window.RISK_PHRASES.HEALTH
-    )
 
   _.delay(->
     $(".environment .fill").css("width", environmentPercent + "%")
@@ -190,10 +187,13 @@ listRisks = (rString, phrases) ->
 
   risks
 
+
+filterProducts = (products) ->
+  _.filter(products, (item) -> return item.R )
+
 window.app =
   initialize: ->
     $(document).on "deviceready", deviceready
     cacheSelectors()
     FastClick.attach(document.body)
-    # displaySearchResults [MOCK_PRODUCT, MOCK_PRODUCT]
-    displayProduct MOCK_PRODUCT
+    # displayProduct MOCK_PRODUCT
