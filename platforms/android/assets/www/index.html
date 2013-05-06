@@ -46,8 +46,14 @@
                         <a href="<%= product.url %>" class="url"><img src="<%= product.image_link %>"></a>
                         <p class="description"><%= product.desc %></p>
                     </p>
-                    <div class="rating-container">
-                        <span>Miljövänlighet: <%= Math.round(environmentPercent) %>%</span>
+                    <div class="environment bar-container">
+                        <span>Miljöfarlighet: <%= Math.round(environmentPercent) %>%</span>
+                        <div class="bar">
+                            <div class="fill"></div>
+                        </div>
+                    </div>
+                    <div class="health bar-container">
+                        <span>Hälsofarlighet: <%= Math.round(healthPercent) %>%</span>
                         <div class="bar">
                             <div class="fill"></div>
                         </div>

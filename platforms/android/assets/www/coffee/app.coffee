@@ -1,7 +1,8 @@
 ENDPOINT = "http://fierce-harbor-8745.herokuapp.com/product"
 SCREEN_WIDTH = 320
-MAX_INDEX = 11
-MIN_INDEX = 0
+
+ENVIRONMENT_MAX_INDEX = 8
+HEALTH_MAX_INDEX = 8
 
 MOCK_PRODUCT = {
   "R": "37, 38, 41",
@@ -122,15 +123,25 @@ displayProduct = (product) ->
   template = _.template $cached.templates.product.html()
 
   environmentPercent = calculateEnvironmentPercent product
+  healthPercent = calculateHealthPercent product
 
   $cached.product.$.html template(
     product: product
     environmentPercent: environmentPercent
-    risks: listRisks product.R
+    healthPercent: healthPercent
+    risks: listRisks(
+      product.R,
+      _.defaults window.RISK_PHRASES.ENVIRONMENT, window.RISK_PHRASES.HEALTH
+    )
   )
+  console.log listRisks(
+      product.R,
+      _.defaults window.RISK_PHRASES.ENVIRONMENT, window.RISK_PHRASES.HEALTH
+    )
 
   _.delay(->
-    $(".rating-container .fill").css("width", environmentPercent + "%")
+    $(".environment .fill").css("width", environmentPercent + "%")
+    $(".health .fill").css("width", healthPercent + "%")
   , 1000)
 
 
@@ -154,17 +165,30 @@ gotoScreen = ({id, index, backward}) ->
     $cached.searchResults.$.hide() if screenIndex is 1
   )
 
-
 # Send a request to wake up the server
 serverWakeUp = ->
   $.get ENDPOINT
 
 calculateEnvironmentPercent = (product) ->
-  100 - ((listRisks(product.R).length - MIN_INDEX) / (MAX_INDEX - MIN_INDEX)) * 100
+  (listEnvironmentRisks(product.R).length  / ENVIRONMENT_MAX_INDEX) * 100
 
-listRisks = (rString) ->
+calculateHealthPercent = (product) ->
+  (listHealthRisks(product.R).length  / HEALTH_MAX_INDEX) * 100
+
+listEnvironmentRisks = (rString) ->
+  listRisks rString, window.RISK_PHRASES.ENVIRONMENT
+
+listHealthRisks = (rString) ->
+  listRisks rString, window.RISK_PHRASES.HEALTH
+
+listRisks = (rString, phrases) ->
   return [] unless rString
-  _(rString.split(" ")).map((item) -> RISK_PHRASES[item.replace(",", "")])
+  risks = []
+  for item in rString.split(" ")
+    risk = phrases[item.replace(",", "")]
+    risks.push(risk) if risk
+
+  risks
 
 window.app =
   initialize: ->
@@ -172,4 +196,4 @@ window.app =
     cacheSelectors()
     FastClick.attach(document.body)
     # displaySearchResults [MOCK_PRODUCT, MOCK_PRODUCT]
-    # _.delay (-> displayProduct MOCK_PRODUCT), 1000
+    displayProduct MOCK_PRODUCT
