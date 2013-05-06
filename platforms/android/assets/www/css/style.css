@@ -1,6 +1,5 @@
 * {
   box-sizing: border-box;
-  -webkit-backface-visibility: hidden;
 }
 html,
 body {
@@ -19,6 +18,7 @@ body {
   height: 100%;
   width: 960px;
   background: #d6d8e5;
+  -webkit-backface-visibility: hidden;
 }
 .app section {
   margin: 0;
@@ -150,7 +150,6 @@ body {
   padding-left: 5px;
 }
 #product .info .bar-container .bar {
-  position: relative;
   margin-top: 5px;
   height: 30px;
   background-color: #ba5e4b;
@@ -158,10 +157,8 @@ body {
   text-align: center;
 }
 #product .info .bar-container .bar .fill {
-  position: absolute;
+  width: 0%;
   height: 100%;
-  top: 0;
-  left: 0;
   background-color: #F8EFEF;
   -webkit-transition: width 1.25s;
 }
